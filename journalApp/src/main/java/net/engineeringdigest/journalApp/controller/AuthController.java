@@ -38,10 +38,10 @@ public class AuthController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteUserById() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        userRepository.deleteByUserName(authentication.getName());
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+//    @DeleteMapping
+//    public ResponseEntity<?> deleteUserById() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        userRepository.deleteByUserName(authentication.getName());
+//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//    }
 }

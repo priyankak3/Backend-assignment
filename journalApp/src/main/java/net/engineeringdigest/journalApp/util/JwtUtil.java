@@ -1,4 +1,5 @@
 package net.engineeringdigest.journalApp.util;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -27,11 +28,11 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getSigningKey())
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey()) // Use the correct signing key here
                 .build()
-                .parseSignedClaims(token)
-                .getPayload();
+                .parseClaimsJws(token) // Correct method for parsing JWT
+                .getBody();
     }
 
     private Boolean isTokenExpired(String token) {
@@ -45,13 +46,11 @@ public class JwtUtil {
 
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
-                .claims(claims)
-                .subject(subject)
-                .header().empty().add("typ","JWT")
-                .and()
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 5 minutes expiration time
-                .signWith(getSigningKey())
+                .setClaims(claims)
+                .setSubject(subject) // Include the username as the subject
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiration
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256) // Use HS256 algorithm
                 .compact();
     }
 

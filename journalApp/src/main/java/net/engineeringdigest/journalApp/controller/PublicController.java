@@ -10,9 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/public")
@@ -36,13 +40,40 @@ public class PublicController {
         return "Ok";
     }
 
-    @PostMapping("/signup")
-    public void signup(@RequestBody UserDTO user) {
-        UserEntity newUser = new UserEntity();
-        newUser.setUsername(user.getUsername());
-        newUser.setPassword(user.getPassword());
-        userEntryService.saveNewUser(newUser);
+//    @PostMapping("/signup")
+//    public void signup(@RequestBody UserDTO user) {
+//        UserEntity newUser = new UserEntity();
+//        newUser.setUsername(user.getUserName());
+//        newUser.setPassword(user.getPassword());
+//        userEntryService.saveNewUser(newUser);
+//    }
+@PostMapping("/signup")
+public ResponseEntity<?> signup(@Valid @RequestBody UserDTO user) {
+    // Extensive Logging
+    System.out.println("Received UserDTO: " + user);
+    if (user == null) {
+        return ResponseEntity.badRequest().body("User object is null");
     }
+
+    if (user.getUserName() == null || user.getUserName().trim().isEmpty()) {
+        return ResponseEntity.badRequest().body("Username is required and cannot be empty");
+    }
+
+    try {
+        UserEntity newUser = new UserEntity();
+        newUser.setUsername(user.getUserName());
+        newUser.setPassword(user.getPassword());
+
+        userEntryService.saveNewUser(newUser);
+
+        return ResponseEntity.ok("User registered successfully");
+    } catch (Exception e) {
+        System.err.println("Signup Error: " + e.getMessage());
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("An error occurred during signup: " + e.getMessage());
+    }
+}
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserEntity user) {
@@ -57,4 +88,6 @@ public class PublicController {
             return new ResponseEntity<>("Incorrect username or password", HttpStatus.BAD_REQUEST);
         }
     }
+
 }
+
