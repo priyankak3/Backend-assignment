@@ -100,3 +100,14 @@ Enhancement: The application uses RBAC to assign users different roles (e.g., Ad
 ### 2. Session Expiry and Forced Logout
 Enhancement: To prevent session hijacking, users will be logged out after a defined period of inactivity.
 
+
+## Screen Shots of the website
+
+### Basic LOGIN PAGE
+<img width="1366" alt="Screen Shot 2024-12-01 at 6 25 43 PM" src="https://github.com/user-attachments/assets/21997138-90a4-4ece-8f79-1f05c79a90bb">
+
+### ADMIN LOGIN
+<img width="1344" alt="Screen Shot 2024-12-01 at 6 21 59 PM" src="https://github.com/user-attachments/assets/be933f85-435e-479a-961c-61c46e1e2f0e">
+
+### USER LOGIN
+<img width="1362" alt="Screen Shot 2024-12-01 at 6 26 42 PM" src="https://github.com/user-attachments/assets/74724c6d-bf12-4d73-9c97-7c7d88dc7cfe">
