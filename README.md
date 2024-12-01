@@ -1,4 +1,4 @@
-# Backend Assignment
+# Backend Assignment -  Role-Based Access Control (RBAC) Implementation with Google Authentication and JWT
 
 This repository contains the backend implementation for the assignment. It provides functionality for user authentication, JWT token generation and validation, and other key features necessary for handling backend requests in a web application. The backend is built using **Spring Boot** and relies on **JWT** (JSON Web Token) for secure API authorization.
 
@@ -21,6 +21,7 @@ Ensure that you have the following installed:
 - **Java 11 or later** (for building and running the project)
 - **Maven** (for project management and dependency handling)
 - **Postman** (for testing API endpoints)
+- **Node** (for frontend implementation - React framework)
 
 ### Clone the Repository
 
@@ -28,13 +29,27 @@ Ensure that you have the following installed:
 git clone https://github.com/priyankak3/Backend-assignment.git
 cd Backend-assignment
 ```
+
+### Configure Environment Variables
+For JWT Authentication and Google OAuth:
+```bash
+JWT_SECRET=your_jwt_secret_key
+GOOGLE_CLIENT_ID=your_google_oauth_client_id
+GOOGLE_CLIENT_SECRET=your_google_oauth_client_secret
+```
+
 ### Build the Project
 - Use Maven to build the project:
 ```bash
 mvn clean install
 mvn spring-boot:run
+
+npm init
+npm start  # For Node.js
 ```
 The application will start on http://localhost:8081
+
+
 ## Tech stack
 This project uses the following technologies:
 
@@ -76,6 +91,7 @@ First, send a POST request to /authenticate with the username and password. This
 
 2. Access Protected Routes:
 Use the JWT token to access any protected routes by passing it in the Authorization header as Bearer <your-jwt-token>.
+Once the application is running, you can interact with the API using tools like Postman or Insomnia.
 
 ## Enhancements
 ### 1. Granular Role-Based Access Control (RBAC)
