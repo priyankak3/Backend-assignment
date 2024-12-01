@@ -35,7 +35,7 @@ For JWT Authentication and Google OAuth:
 ```bash
 JWT_SECRET=your_jwt_secret_key
 GOOGLE_CLIENT_ID=your_google_oauth_client_id
-GOOGLE_CLIENT_SECRET=your_google_oauth_client_secret
+MONGO-URI = your_mongo_uri
 ```
 
 ### Build the Project
