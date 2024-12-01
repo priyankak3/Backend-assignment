@@ -58,6 +58,7 @@ This project uses the following technologies:
 - Spring Security - For handling authentication and authorization.
 - JWT (JSON Web Tokens) - For secure, stateless user authentication.
 - Maven - Build tool for managing project dependencies.
+- MongoDB - For storaging user information (database).
   
 ## Project Structure
 ```
