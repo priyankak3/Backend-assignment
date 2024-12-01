@@ -4,18 +4,30 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null); // Logged-in user
-    const [token, setToken] = useState(localStorage.getItem("token"));
+    const [token, setToken] = useState(localStorage.getItem("token")); // Persist token in state
 
     useEffect(() => {
         if (token) {
-            const userData = JSON.parse(atob(token.split(".")[1]));
-            setUser(userData);
+            try {
+                // Safely decode and parse the token
+                const userData = JSON.parse(atob(token.split(".")[1]));
+                setUser(userData);
+            } catch (error) {
+                console.error("Error decoding token", error);
+                logout(); // Log out on invalid token
+            }
         }
     }, [token]);
 
     const login = (token) => {
-        setToken(token);
-        localStorage.setItem("token", token);
+        try {
+            const userData = JSON.parse(atob(token.split(".")[1])); // Decode token
+            setUser(userData);
+            setToken(token);
+            localStorage.setItem("token", token);
+        } catch (error) {
+            console.error("Error parsing token during login", error);
+        }
     };
 
     const logout = () => {

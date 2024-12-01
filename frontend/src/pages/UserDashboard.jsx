@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode"; // Corrected import
 import "./UserDashboard.css";
-const UserDashboard = () => {
+
+const UserDashboard = ({admin}) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
@@ -23,7 +24,6 @@ const UserDashboard = () => {
       }
     }
   }, [navigate]);
-
   const handleLogout = () => {
     // Clear the user from localStorage and redirect to login page
     localStorage.removeItem("token");

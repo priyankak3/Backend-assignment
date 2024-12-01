@@ -7,23 +7,25 @@ import jwt_decode from "jwt-decode";
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
-  const { login } = useContext(AuthContext); // assuming you have a context to handle authentication
+  const [isAdminLogin, setIsAdminLogin] = useState(false); // To toggle between user and admin login
+  const { login } = useContext(AuthContext); // Assuming you have a context to handle authentication
   const [jwtToken, setJwtToken] = useState(null);
   const navigate = useNavigate(); // Updated usage
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const endpoint = isAdminLogin
+        ? "http://localhost:8081/public/login"
+        : "http://localhost:8081/public/login";
+
       // Sending login request to the backend with username and password
-      const { data } = await axios.post(
-        "http://localhost:8081/public/login",
-        formData
-      );
+      const { data } = await axios.post(endpoint, formData);
       console.log(data);
       if (data) {
         login(data); // Assuming login sets the JWT token in the context or localStorage
         alert("Login successful!");
-        navigate("/user-dashboard");
+        navigate(isAdminLogin ? "/admin-dashboard" : "/user-dashboard");
       }
     } catch (err) {
       console.log(err);
@@ -32,52 +34,59 @@ const Login = () => {
       );
     }
   };
-const handleGoogleSuccess = async (response) => {
 
-  try {
-    const credential = response.credential;
-    const decodedToken = jwt_decode(credential);
-    console.log(decodedToken);
+  const handleGoogleSuccess = async (response) => {
+    try {
+      const credential = response.credential;
+      const decodedToken = jwt_decode(credential);
+      const email = decodedToken.email;
+      const name = decodedToken.name;
+      const role = ["USER"];
 
-    const email = decodedToken.email;  // Email from the decoded token
-    const name = decodedToken.name;
-    const role = ["USER"];
-    console.log(email);
-    console.log(name);
+      // Sending the Google login request to the backend
+      const res = await axios.post(
+        "http://localhost:8081/public/google-login",
+        {
+          email,
+          name,
+          role,
+        }
+      );
 
-    // Sending the Google login request to the backend
-    const res = await axios.post("http://localhost:8081/public/google-login", {
-      email,
-      name,
-      role
-    });
-
-    if (res.status===200) {
-      console.log("JWT Token received:", res.data);  // Log the token to check the response
-      setJwtToken(res.data);  // Store the JWT token in state
-      login(res.data); 
-      navigate("/user-dashboard");
-      alert("Google login successful!");
-    } else {
-      console.log("Google Login failed:", res);
-      alert("Google login failed.");
+      if (res.status === 200) {
+        console.log("JWT Token received:", res.data); // Log the token to check the response
+        setJwtToken(res.data); // Store the JWT token in state
+        login(res.data);
+        navigate("/user-dashboard");
+        alert("Google login successful!");
+      } else {
+        console.log("Google Login failed:", res);
+        alert("Google login failed.");
+      }
+    } catch (error) {
+      console.error("Google Login Error:", error);
+      alert("Google login failed. Please try again.");
     }
-  } catch (error) {
-    console.error("Google Login Error:", error);
-    alert("Google login failed. Please try again.");
-  }
-};
+  };
 
   const handleGoogleFailure = (error) => {
     console.error("Google Login Failed", error);
     alert("Google login failed. Please try again.");
   };
 
+  const handleSignUpClick = () => {
+    navigate("/signup"); // Replace with the actual path of your signup page
+  };
+
+  const toggleAdminLogin = () => {
+    setIsAdminLogin(!isAdminLogin); // Toggle login mode
+  };
+
   return (
     <GoogleOAuthProvider clientId="315689714380-tgiojutoknpnfaqv3e7su11hurlmqcll.apps.googleusercontent.com">
       <div>
+        <h2>{isAdminLogin ? "Admin Login" : "User Login"}</h2>
         <form onSubmit={handleSubmit}>
-          <h2>Login</h2>
           <input
             type="text"
             placeholder="Username"
@@ -98,6 +107,15 @@ const handleGoogleSuccess = async (response) => {
           />
           <button type="submit">Login</button>
         </form>
+        <div style={{ justifyContent: "center" }}>
+          Don't have an account?
+          <span
+            style={{ color: "blue", cursor: "pointer", marginLeft: "5px" }}
+            onClick={handleSignUpClick}
+          >
+            Sign Up
+          </span>
+        </div>
         <div
           style={{ marginTop: "20px", textAlign: "center" }}
           className="google-login-container"
@@ -113,6 +131,11 @@ const handleGoogleSuccess = async (response) => {
             {jwtToken && <p>JWT Token: {jwtToken}</p>}{" "}
             {/* Display token for debugging */}
           </div>
+        </div>
+        <div style={{ marginTop: "20px", textAlign: "center" }}>
+          <button onClick={toggleAdminLogin}>
+            Switch to {isAdminLogin ? "User" : "Admin"} Login
+          </button>
         </div>
       </div>
     </GoogleOAuthProvider>
